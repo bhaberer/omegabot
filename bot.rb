@@ -8,7 +8,6 @@ require 'cinch-logger-canonical'
 require 'cinch-radiomega'
 require 'cinch-hangouts'
 require 'cinch-seen'
-#require 'cinch-twitch'
 require 'cinch-notes'
 
 # Load the bot config
@@ -35,7 +34,7 @@ conf = Psych.load(File.open('config/bot.yml'))
     #c.plugins.options[Cinch::Plugins::TwitchTV] = { streamid: 'omegadaz' }
   end
 
-  on :channel, /\A\.stats\z/ do |m|
+  on :message, /\A\.stats\z/ do |m|
     if conf.key?(:stats_url)
       m.user.send 'The stats for the channel are available at: ' +
                   conf[:stats_url]
@@ -44,8 +43,8 @@ conf = Psych.load(File.open('config/bot.yml'))
     end
   end
 
-  on :channel, /\A\.help\z/ do |m|
-    m.user.send 'Hello, my name is #{conf[:nick]}, and I\'m ' +
+  on :message, /\A\.help\z/ do |m|
+    m.user.send "Hello, my name is #{@bot.nick}, and I\'m " +
                 "the #{m.channel.name} bot."
     if conf.key?(:wiki_url)
       m.user.send 'You can find out more about me and how to file feature' +
