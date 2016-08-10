@@ -3,22 +3,13 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'cinch'
+require 'psych'
 require 'cinch-logger-canonical'
-
-require 'cinch-bag'
-require 'cinch-calculate'
-require 'cinch-convert'
-require 'cinch-dicebag'
+require 'cinch-radiomega'
 require 'cinch-hangouts'
-require 'cinch-karma'
-require 'cinch-logsearch'
 require 'cinch-seen'
-require 'cinch-pax-timer'
-require 'cinch-links-logger'
-require 'cinch-links-tumblr'
-require 'cinch-twitterstatus'
-require 'cinch-urbandict'
-require 'cinch-wikipedia'
+#require 'cinch-twitch'
+require 'cinch-notes'
 
 # Load the bot config
 conf = Psych.load(File.open('config/bot.yml'))
@@ -40,23 +31,8 @@ conf = Psych.load(File.open('config/bot.yml'))
         Class.module_eval("Cinch::Plugins::#{plugin}")
       end
 
-    # Setup the cooldown if one is configured
-    c.shared[:cooldown] = { config: conf[:cooldowns] } if conf.key?(:cooldowns)
-
-    # Link logger config
-    if conf.key?(:links) && defined?(Cinch::Plugins::LinksLogger)
-      c.plugins.options[Cinch::Plugins::LinksLogger] = conf[:links]
-    end
-
-    # Tumblr config
-    if conf.key?(:tumblr) && defined?(Cinch::Plugins::LinksTumblr)
-      c.plugins.options[Cinch::Plugins::LinksTumblr] = conf[:tumblr]
-    end
-
-    # Twitter config
-    if conf.key?(:twitter) && defined?(Cinch::Plugins::TwitterStatus)
-      c.plugins.options[Cinch::Plugins::TwitterStatus] = conf[:twitter]
-    end
+    c.plugins.options[Cinch::Plugins::Radiomega] = { host: 'http://radiomega.herokuapp.com' }
+    #c.plugins.options[Cinch::Plugins::TwitchTV] = { streamid: 'omegadaz' }
   end
 
   on :channel, /\A\.stats\z/ do |m|
